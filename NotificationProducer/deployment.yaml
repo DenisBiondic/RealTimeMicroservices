@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-producer
+  namespace: realtime-microservices
+  labels:
+    app: notification-producer
+spec:
+  selector:
+    matchLabels:
+      app: notification-producer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: notification-producer
+    spec:
+      containers:
+      - name: notification-producer-container
+        imagePullPolicy: Always
+        image: ${DockerRegistryUrl}/notification-producer:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
