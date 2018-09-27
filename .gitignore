@@ -1,3 +1,6 @@
 NotificationProducer/bin
 NotificationProducer/obj
+BackendForFrontend/bin
+BackendForFrontend/obj
 .generated
+Frontend/node_modules

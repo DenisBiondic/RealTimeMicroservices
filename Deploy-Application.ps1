@@ -23,5 +23,10 @@ $deploymentFilePath = "./.generated/notification-producer-deployment.yaml"
 Copy-Item -Path ./NotificationProducer/deployment.yaml -Destination $deploymentFilePath
 (Get-Content $deploymentFilePath).replace('${DockerRegistryUrl}', $DockerRegistryUrl) | Set-Content $deploymentFilePath
 
+# backend for frontend
+$deploymentFilePath = "./.generated/bff-deployment.yaml"
+Copy-Item -Path ./BackendForFrontend/deployment.yaml -Destination $deploymentFilePath
+(Get-Content $deploymentFilePath).replace('${DockerRegistryUrl}', $DockerRegistryUrl) | Set-Content $deploymentFilePath
+
 # deploy everything
 kubectl apply -f .generated
