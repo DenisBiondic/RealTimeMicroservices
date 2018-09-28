@@ -21,7 +21,11 @@ namespace NotificationProducer
 
                   while (true)
                   {
-                      pubsub.Publish(NotificationChannel, $"Message at { DateTime.Now }");
+                      var notificationMessage = $"Message at { DateTime.Now }";
+                      pubsub.Publish(NotificationChannel, notificationMessage);
+                      
+                      Console.WriteLine(notificationMessage);
+
                       Thread.Sleep(TimeSpan.FromSeconds(3));
                   }
             }

@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  backend-for-frontend:
+    image: realtime/backend-for-frontend
+    build:
+      context: ./BackendForFrontend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+
+  redis:
+    image: redis
+
+  # frontend:
+  #   image: realtime/frontend
+  #   ports:
+  #     - "8080:80"
+  #   build:
+  #     context: ./Frontend
+  #     dockerfile: Dockerfile
+
+  notification-producer:
+    image: realtime/notification-producer
+    build:
+      context: ./NotificationProducer
+      dockerfile: Dockerfile
