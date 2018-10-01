@@ -22,3 +22,10 @@ $BffImageName = "$DockerRegistryUrl/backend-for-frontend"
 
 docker build -f ./BackendForFrontend/Dockerfile -t $BffImageName ./BackendForFrontend
 docker push $BffImageName
+
+Write-Host "------------------------------------------------------"
+Write-Host "Building and pushing the frontend image..."
+$FrontendImageName = "$DockerRegistryUrl/frontend"
+
+docker build -f ./Frontend/Dockerfile -t $FrontendImageName ./Frontend
+docker push $FrontendImageName
