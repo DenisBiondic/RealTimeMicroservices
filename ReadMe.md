@@ -21,6 +21,10 @@ To re-deploy, delete the k8s realtime-microservices namespace
 
 For websockets to work through ingress, sticky session has to be used, which is implemented using affinity cookies at the moment (check the ingress definition of the BFF) 
 
+### Auth
+
+Is not implemented but if required it would be done in the same way as the normal auth is done in asp.net core (e.g. token based, [Authorize] atrribute over the signalr hub etc.)
+
 ### Redis
 Check redis: `kubectl run redis-cli-image -i --tty --rm --image redis -n realtime-microservices -- /bin/sh`
 You can then run something like `redis-cli -h redis` and `SUBSCRIBE Notification-Channel`
