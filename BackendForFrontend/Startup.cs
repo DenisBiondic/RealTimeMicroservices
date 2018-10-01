@@ -57,7 +57,7 @@ namespace BackendForFrontend
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<NotificationHub>("/notificationhub");
+                routes.MapHub<NotificationHub>("/hubs/notificationhub");
             });
 
             app.UseMvc();

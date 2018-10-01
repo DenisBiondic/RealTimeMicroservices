@@ -7,7 +7,10 @@ RUN npm i && mkdir /ng-app && cp -R ./node_modules ./ng-app
 
 WORKDIR /ng-app
 COPY . .
-RUN $(npm bin)/ng build --prod
+
+# a simple workaround to sove env url issue, altough it violates the build once deploy many principle
+ARG IS_CLOUD 
+RUN if [ "x$IS_CLOUD" = "x" ] ; then $(npm bin)/ng build ; else $(npm bin)/ng build --configuration=cloud; fi
 
 # Runtime image
 FROM nginx:1.13.3-alpine

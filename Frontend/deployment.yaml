@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-for-frontend
+  name: frontend
   namespace: realtime-microservices
   labels:
-    app: notification-producer
+    app: frontend
 spec:
   selector:
     matchLabels:
-      app: backend-for-frontend
+      app: frontend
   replicas: 1
   template:
     metadata:
       labels:
-        app: backend-for-frontend
+        app: frontend
     spec:
       containers:
-      - name: backend-for-frontend-container
+      - name: frontend-container
         imagePullPolicy: Always
-        image: ${DockerRegistryUrl}/backend-for-frontend:latest
+        image: ${DockerRegistryUrl}/frontend:latest
         resources:
           requests:
             cpu: 100m
@@ -27,18 +27,18 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-for-frontend
+  name: frontend
   namespace: realtime-microservices
 spec:
   ports:
   - port: 80
   selector:
-    app: backend-for-frontend
+    app: frontend
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: bff-ingress
+  name: frontend-ingress
   namespace: realtime-microservices
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -47,11 +47,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /api
+      - path: /
         backend:
-          serviceName: backend-for-frontend
-          servicePort: 80
-      - path: /hubs
-        backend:
-          serviceName: backend-for-frontend
+          serviceName: frontend
           servicePort: 80

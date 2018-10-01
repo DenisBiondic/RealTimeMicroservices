@@ -27,5 +27,5 @@ Write-Host "------------------------------------------------------"
 Write-Host "Building and pushing the frontend image..."
 $FrontendImageName = "$DockerRegistryUrl/frontend"
 
-docker build -f ./Frontend/Dockerfile -t $FrontendImageName ./Frontend
+docker build -f ./Frontend/Dockerfile -t $FrontendImageName --build-arg IS_CLOUD=true ./Frontend
 docker push $FrontendImageName

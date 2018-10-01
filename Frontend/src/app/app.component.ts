@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     let connection = new HubConnectionBuilder()
-      .withUrl(environment.backendUrl + "/notificationhub")
+      .withUrl(environment.backendUrl + "/hubs/notificationhub")
       .build();
 
     connection.on("NewNotification", (msg) => {
