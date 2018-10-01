@@ -37,7 +37,7 @@ namespace BackendForFrontend
                        .AllowCredentials();
             }));
 
-            services.AddSignalR();
+            services.AddSignalR().AddAzureSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -51,11 +51,11 @@ namespace BackendForFrontend
                 app.UseHsts();
             }
 
-            app.UseStaticFiles();
+            app.UseFileServer();
 
             app.UseCors("CorsPolicy");
 
-            app.UseSignalR(routes =>
+            app.UseAzureSignalR(routes =>
             {
                 routes.MapHub<NotificationHub>("/hubs/notificationhub");
             });
@@ -69,7 +69,7 @@ namespace BackendForFrontend
         private void SubscribeToRedisChannelAndBroadcaast(IHubContext<NotificationHub> notificationHub)
         {
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("redis");
-
+            
             ISubscriber sub = redis.GetSubscriber();
 
             sub.Subscribe("Notification-Channel", async (channel, message) =>
