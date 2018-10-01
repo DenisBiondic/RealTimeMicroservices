@@ -9,7 +9,7 @@ Simply run docker-compose up from the source code root.
 **prerequisite:** 
 k8s cluster with 
 - an access to a registry
-- ingress controller (or ignore the ingress and modify the services to expose them directly over LB or node port)
+- ingress controller (or ignore the ingress and modify the services to expose them directly over LB or node port). Beware: Ingress is written with path based routing only, meaning the complete host is presumed to be free (/ is the app, /app & /hubs is pointed to bff).
 
 Run `BuildAndPush-Containers.ps1` and `Deploy-Application.ps1` (you need the URL of your registry as a mandatory parameter for the scripts)
 To re-deploy, delete the k8s realtime-microservices namespace
