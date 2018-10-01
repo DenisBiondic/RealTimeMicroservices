@@ -17,5 +17,10 @@ To re-deploy, delete the k8s realtime-microservices namespace
 
 ## Side notes
 
+### Websockets
+
+For websockets to work through ingress, sticky session has to be used, which is implemented using affinity cookies at the moment (check the ingress definition of the BFF) 
+
+### Redis
 Check redis: `kubectl run redis-cli-image -i --tty --rm --image redis -n realtime-microservices -- /bin/sh`
 You can then run something like `redis-cli -h redis` and `SUBSCRIBE Notification-Channel`
