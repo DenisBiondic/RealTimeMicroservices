@@ -33,7 +33,7 @@ namespace NotificationProducer
 
                       Console.WriteLine(notificationMessage);
 
-                      Thread.Sleep(TimeSpan.FromSeconds(3));
+                      Thread.Sleep(TimeSpan.FromSeconds(1));
                   }
             }
       }

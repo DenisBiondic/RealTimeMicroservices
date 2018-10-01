@@ -71,10 +71,10 @@ namespace BackendForFrontend
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("redis");
 
             ISubscriber sub = redis.GetSubscriber();
-            IDatabase db = redis.GetDatabase();
 
             sub.Subscribe("Notification-Channel", async (channel, info) =>
             {
+                IDatabase db = redis.GetDatabase();
                 var message = db.ListRightPop("Notification-List");
 
                 if (message != RedisValue.Null)
