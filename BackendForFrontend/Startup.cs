@@ -71,11 +71,17 @@ namespace BackendForFrontend
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("redis");
 
             ISubscriber sub = redis.GetSubscriber();
+            IDatabase db = redis.GetDatabase();
 
-            sub.Subscribe("Notification-Channel", async (channel, message) =>
+            sub.Subscribe("Notification-Channel", async (channel, info) =>
             {
-                await notificationHub.Clients.All.SendAsync("NewNotification", message);
-                Console.WriteLine($"Forwarded message: { message }");
+                var message = db.ListRightPop("Notification-List");
+
+                if (message != RedisValue.Null)
+                {
+                    await notificationHub.Clients.All.SendAsync("NewNotification", message);
+                    Console.WriteLine($"Forwarded message: { message }");
+                }
             });
         }
     }

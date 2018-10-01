@@ -12,18 +12,25 @@ namespace NotificationProducer
             private static ConnectionMultiplexer connection =
               ConnectionMultiplexer.Connect(RedisConnectionString);
 
-            private const string NotificationChannel = "Notification-Channel";
+            private const string ListName = "Notification-List";
+            private const string ChannelName = "Notification-Channel";
 
             public static void Main()
             {
-                  // Create pub/sub
-                  var pubsub = connection.GetSubscriber();
+                  var db = connection.GetDatabase();
+                  var subscription = connection.GetSubscriber();
 
                   while (true)
                   {
                       var notificationMessage = $"Notification at { DateTime.Now }";
-                      pubsub.Publish(NotificationChannel, notificationMessage);
                       
+                      // put the message into the "queue" simulated by the list
+                      db.ListLeftPush(ListName, notificationMessage);
+                  
+                      // notify possible subscribers that there is a new message to process (so they don't have to poll)
+                      subscription.Publish(ChannelName, "There is a new message in the list. If you are " +
+                        "the lucky consumer instance, you might have the honour to proccess it!");
+
                       Console.WriteLine(notificationMessage);
 
                       Thread.Sleep(TimeSpan.FromSeconds(3));
