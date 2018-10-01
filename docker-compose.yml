@@ -3,6 +3,7 @@ version: '3'
 services:
   backend-for-frontend:
     image: realtime/backend-for-frontend
+    depends_on: ["redis"]
     build:
       context: ./BackendForFrontend
       dockerfile: Dockerfile
@@ -12,16 +13,18 @@ services:
   redis:
     image: redis
 
-  # frontend:
-  #   image: realtime/frontend
-  #   ports:
-  #     - "8080:80"
-  #   build:
-  #     context: ./Frontend
-  #     dockerfile: Dockerfile
+  frontend:
+    image: realtime/frontend
+    depends_on: ["backend-for-frontend"]
+    ports:
+      - "8080:80"
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
 
   notification-producer:
     image: realtime/notification-producer
+    depends_on: ["redis"]
     build:
       context: ./NotificationProducer
       dockerfile: Dockerfile
