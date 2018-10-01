@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BackendForFrontend.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace BackendForFrontend
 {
@@ -22,13 +25,21 @@ namespace BackendForFrontend
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+            builder =>
+            {
+                builder.AllowAnyMethod().AllowAnyHeader()
+                       .WithOrigins("*")
+                       .AllowCredentials();
+            }));
+
+            services.AddSignalR();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -40,8 +51,32 @@ namespace BackendForFrontend
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseCors("CorsPolicy");
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotificationHub>("/notificationhub");
+            });
+
             app.UseMvc();
+
+            var notificationHub = app.ApplicationServices.GetRequiredService<IHubContext<NotificationHub>>();
+            SubscribeToRedisChannelAndBroadcaast(notificationHub);
+        }
+
+        private void SubscribeToRedisChannelAndBroadcaast(IHubContext<NotificationHub> notificationHub)
+        {
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("redis");
+
+            ISubscriber sub = redis.GetSubscriber();
+
+            sub.Subscribe("Notification-Channel", async (channel, message) =>
+            {
+                await notificationHub.Clients.All.SendAsync("NewNotification", message);
+                Console.WriteLine($"Forwarded message: { message }");
+            });
         }
     }
 }
