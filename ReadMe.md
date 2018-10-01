@@ -1,3 +1,19 @@
+## How it works
+
+**NotificationProducer** generates a "notification" every second, and then:
+- writes the notification into a Redis list
+- publishes an event on Redis channel to notify all listeners there is a new entry in the list.
+
+Additional step with the list is there because pub-sub does not guarantee that only one consumer will process the notification, while "locking" on a list makes it a sure thing (pop operation is atomic).
+
+**Redis** is well, a nice message broker in this case. Redis is a nice fit for scenarios where "notification" scenario is required, which means that websockets and such are just an improvement over the existing data fetching strategy (e.g. rest call on start of the app). Redis as showcased here should not be used for durable messaging of business critical data!
+
+**BackendForFrontend** (multiple instances of it) subscribes to redis channel, processes the new list entry (only once), and notifies all connected frontends over SignalR.
+
+**Frontend** is a simple Angular app showing toasts when notifications arrive.
+
+*optional* **Azure SignalR Service** can be used to offload websocket connections between BFF and Frontend. For instructions, check below.
+
 ## Getting started
 
 ### Locally with docker & compose
