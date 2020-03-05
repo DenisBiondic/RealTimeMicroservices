@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HubConnectionBuilder } from '@aspnet/signalr';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 import { MessageService } from 'primeng/api';
 import { environment } from '../environments/environment';
 
