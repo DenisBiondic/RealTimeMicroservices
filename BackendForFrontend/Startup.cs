@@ -74,7 +74,7 @@ namespace BackendForFrontend
 
                 if (message != RedisValue.Null)
                 {
-                    await notificationHub.Clients.All.SendAsync("NewNotification", message);
+                    await notificationHub.Clients.All.SendAsync("NewNotification", message.ToString());
                     Console.WriteLine($"Forwarded message: { message }");
                 }
             });
